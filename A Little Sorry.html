@@ -1,0 +1,635 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>A Little Sorry</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fredoka:wght@400;500;600&display=swap">
+<style>
+/* Layout: one soft card at a time on a pastel haze, each tap moves the story forward. Single light look by choice. */
+:root {
+  --ink: #5b3a3f;
+  --ink-soft: #94767a;
+  --card: #fbf8f7;
+  --peach: #f8d8c6;
+  --rose: #f3c6da;
+  --lilac: #ddd4fb;
+  --butter: #f8efcf;
+  --heart: #ef6a74;
+  --line: #5a3a32;
+  --display: "Dancing Script", "Snell Roundhand", "Brush Script MT", cursive;
+  --body: "Fredoka", "Nunito", "Trebuchet MS", system-ui, sans-serif;
+  --shadow-out: 14px 18px 36px rgba(150, 110, 120, .18), -10px -10px 28px rgba(255, 255, 255, .9);
+  --shadow-in: inset 6px 6px 14px rgba(150, 110, 120, .16), inset -6px -6px 14px rgba(255, 255, 255, .85);
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body {
+  background: linear-gradient(135deg, #fbe7dc 0%, #f8eef2 38%, #efe9fb 70%, #fbf4dc 100%);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.sky { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.sky span {
+  position: absolute; bottom: -60px; opacity: .5; filter: blur(.4px);
+  animation: drift linear infinite;
+}
+.sky svg { display: block; }
+@keyframes drift {
+  from { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(-55vh) translateX(18px) rotate(8deg); }
+  to { transform: translateY(-115vh) rotate(-6deg); }
+}
+
+.stage {
+  position: relative; height: 100%;
+  display: grid; place-items: safe center; overflow-y: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 56px;
+  box-sizing: border-box;
+}
+.scene {
+  grid-area: 1 / 1; width: 100%; max-width: 400px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  opacity: 0; transform: translateY(18px) scale(.97); pointer-events: none;
+  transition: opacity .55s ease, transform .55s cubic-bezier(.2, .8, .2, 1);
+}
+.scene.on { opacity: 1; transform: none; pointer-events: auto; }
+.scene.gone { opacity: 0; transform: translateY(-18px) scale(.97); }
+
+.card {
+  width: 100%; box-sizing: border-box;
+  background: var(--card); border-radius: 44px;
+  padding: 22px 22px 26px;
+  box-shadow: var(--shadow-out);
+  display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center;
+}
+.window {
+  position: relative; width: 100%; height: 168px; border-radius: 32px; overflow: hidden;
+  box-shadow: var(--shadow-in);
+}
+.window.pink { background: linear-gradient(#fdf6f8, #f6cfd8); }
+.window.lilac { background: linear-gradient(#fbfaff, #dcd2fb); }
+.window.peach { background: linear-gradient(#fffaf5, #f8d6c3); }
+.window .critter { position: absolute; left: 0; right: 0; margin: 0 auto; bottom: -2px; width: 168px; }
+.window .deco { position: absolute; width: 34px; opacity: .8; animation: bob 3.2s ease-in-out infinite; }
+
+h1, h2 {
+  font-family: var(--display); font-weight: 700; margin: 0; line-height: 1.1;
+  text-wrap: balance; color: var(--ink);
+}
+h1 { font-size: 46px; }
+h2 { font-size: 38px; }
+p { margin: 0; line-height: 1.55; text-wrap: pretty; }
+.sub { color: var(--ink-soft); font-size: 15px; letter-spacing: .02em; }
+
+.btn {
+  font: 600 18px/1 var(--body); color: var(--ink);
+  border: 0; border-radius: 999px; padding: 17px 34px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: linear-gradient(#efdde4, #e4cbd6);
+  box-shadow: 6px 8px 18px rgba(150, 110, 120, .22), -6px -6px 14px rgba(255, 255, 255, .9);
+  transition: transform .15s ease, box-shadow .2s ease, opacity .3s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(1px) scale(.98); box-shadow: var(--shadow-in); }
+.btn:focus-visible, .pill:focus-visible, .tapcard:focus-visible, .coupon:focus-visible, .envelope:focus-visible {
+  outline: 3px solid #c58ea8; outline-offset: 4px;
+}
+.btn.lilac { background: linear-gradient(#e7e0fb, #d4c9f5); }
+.btn[disabled] { opacity: .55; cursor: default; transform: none; }
+.btn svg { width: 18px; height: 18px; }
+
+/* Envelope */
+.envelope {
+  position: relative; width: 270px; height: 178px; border: 0; padding: 0; background: none; cursor: pointer;
+  perspective: 800px; animation: bob 3s ease-in-out infinite;
+}
+.env-back { position: absolute; inset: 0; border-radius: 18px; background: #eeb7cb; box-shadow: var(--shadow-out); }
+.env-letter {
+  position: absolute; left: 16px; right: 16px; top: 12px; height: 150px; border-radius: 12px;
+  background: var(--card); display: grid; place-items: center;
+  font-family: var(--display); font-size: 30px; color: var(--ink);
+  transition: transform .9s cubic-bezier(.2, .8, .2, 1) .35s;
+}
+.env-front {
+  position: absolute; inset: 0; border-radius: 18px; background: #f6cfdd;
+  clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+}
+.env-flap {
+  position: absolute; left: 0; right: 0; top: 0; height: 110px; background: #f2c0d3; border-radius: 18px 18px 0 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; z-index: 3;
+  transition: transform .6s ease, z-index 0s .3s;
+}
+.seal {
+  position: absolute; left: 50%; top: 84px; width: 46px; height: 46px; margin-left: -23px; border-radius: 50%; z-index: 4;
+  background: radial-gradient(circle at 35% 30%, #f48b93, #d8505c); display: grid; place-items: center;
+  box-shadow: 0 4px 10px rgba(180, 60, 70, .3); transition: opacity .3s ease, transform .3s ease;
+}
+.seal svg { width: 22px; fill: #fde8ea; }
+.envelope.open { animation: none; }
+.envelope.open .env-flap { transform: rotateX(180deg); z-index: 0; }
+.envelope.open .seal { opacity: 0; transform: scale(.4); }
+.envelope.open .env-letter { transform: translateY(-62%); }
+.hint { color: var(--ink-soft); font-size: 15px; animation: pulse 1.8s ease-in-out infinite; }
+.eyebrow { font-family: var(--display); font-size: 34px; }
+
+/* Pills */
+.pills { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+.pill {
+  position: relative; height: 82px; border: 0; padding: 0; border-radius: 999px; cursor: pointer;
+  background: none; perspective: 700px; font: inherit; color: inherit;
+}
+.pill .face {
+  position: absolute; inset: 0; border-radius: inherit; display: grid; place-items: center; padding: 0 26px;
+  backface-visibility: hidden; transition: transform .7s cubic-bezier(.3, 1.4, .5, 1);
+  box-shadow: 6px 8px 18px rgba(150, 110, 120, .2), -6px -6px 14px rgba(255, 255, 255, .9);
+}
+.pill .front svg { width: 42px; animation: beat 1.6s ease-in-out infinite; }
+.pill .back { transform: rotateX(180deg); background: var(--card); font-size: 16px; line-height: 1.35; }
+.pill.open .front { transform: rotateX(-180deg); }
+.pill.open .back { transform: rotateX(0); }
+.pill:nth-child(1) .front { background: linear-gradient(#fbe6dc, #f6d0bd); }
+.pill:nth-child(1) .front svg { fill: #e3a08e; }
+.pill:nth-child(2) .front { background: linear-gradient(#f8e5f2, #efc6de); }
+.pill:nth-child(2) .front svg { fill: #db8bb0; animation-delay: .2s; }
+.pill:nth-child(3) .front { background: linear-gradient(#eee9fd, #d6cbf8); }
+.pill:nth-child(3) .front svg { fill: #a895e6; animation-delay: .4s; }
+.pill:nth-child(1) .back { box-shadow: inset 0 0 0 2px #f6d0bd, 6px 8px 18px rgba(150, 110, 120, .18); }
+.pill:nth-child(2) .back { box-shadow: inset 0 0 0 2px #efc6de, 6px 8px 18px rgba(150, 110, 120, .18); }
+.pill:nth-child(3) .back { box-shadow: inset 0 0 0 2px #d6cbf8, 6px 8px 18px rgba(150, 110, 120, .18); }
+
+/* Two windows + tap card */
+.duo { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.duo .window { height: 132px; }
+.duo .window .critter { width: 130px; }
+.duo .window:nth-child(2) .critter { animation: bob 2.6s ease-in-out .4s infinite; }
+.duo .window:nth-child(1) .critter { animation: bob 2.6s ease-in-out infinite; }
+.tapcard {
+  width: 100%; border: 0; padding: 14px 0 0; border-radius: 34px; cursor: pointer; overflow: hidden;
+  background: linear-gradient(#f7eef2, #fbf8f7 40%); box-shadow: var(--shadow-in); font: inherit; color: var(--ink-soft);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.tapcard .tap { font-size: 15px; animation: pulse 1.8s ease-in-out infinite; }
+
+.paper {
+  position: relative; width: 100%; overflow: hidden;
+  background:
+    radial-gradient(ellipse 46% 34% at 6% 20%, rgba(242, 178, 196, .55), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 98% 70%, rgba(242, 178, 196, .4), transparent 70%),
+    radial-gradient(ellipse 50% 26% at 30% 100%, rgba(246, 205, 214, .6), transparent 70%),
+    #fffdfd;
+}
+.paper .sprig { position: absolute; width: 64px; pointer-events: none; }
+.tapcard .paper { padding: 22px 0 26px; }
+.tapcard h2 { font-size: 52px; }
+
+.letter { border-radius: 30px; padding: 30px 26px 34px; box-shadow: inset 0 0 0 1px rgba(200, 160, 170, .2); }
+.letter h1 { font-size: 54px; margin-bottom: 14px; }
+.letter .body { min-height: 300px; font-size: 17.5px; line-height: 1.75; text-align: center; white-space: pre-line; }
+.letter .body::after { content: "|"; color: #d5a2b2; animation: blink .9s steps(1) infinite; margin-left: 1px; }
+.letter.done .body::after { content: ""; }
+.letter .sign { font-family: var(--display); font-size: 28px; margin-top: 12px; opacity: 0; transition: opacity .8s ease; }
+.letter.done .sign { opacity: 1; }
+
+/* Coupons */
+.coupons { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.coupon {
+  position: relative; border: 0; cursor: pointer; font: inherit; color: var(--ink); text-align: left;
+  border-radius: 22px; padding: 16px 14px 14px; min-height: 120px;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+  box-shadow: 6px 8px 18px rgba(150, 110, 120, .18), -6px -6px 14px rgba(255, 255, 255, .9);
+  transition: transform .2s ease;
+}
+.coupon::before, .coupon::after {
+  content: ""; position: absolute; top: 50%; width: 16px; height: 16px; margin-top: -8px; border-radius: 50%; background: var(--card);
+}
+.coupon::before { left: -8px; } .coupon::after { right: -8px; }
+.coupon:nth-child(1) { background: var(--peach); } .coupon:nth-child(2) { background: var(--rose); }
+.coupon:nth-child(3) { background: var(--lilac); } .coupon:nth-child(4) { background: var(--butter); }
+.coupon .no { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
+.coupon .what { font-size: 15.5px; line-height: 1.3; font-weight: 500; }
+.coupon .stamp {
+  position: absolute; right: 10px; bottom: 10px; font: 700 13px/1 var(--body); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--heart); border: 2px solid var(--heart); border-radius: 8px; padding: 5px 7px;
+  transform: rotate(-12deg) scale(2.2); opacity: 0; transition: transform .35s cubic-bezier(.3, 1.6, .5, 1), opacity .2s ease;
+}
+.coupon.used .stamp { transform: rotate(-12deg) scale(1); opacity: 1; }
+.coupon:active { transform: scale(.97); }
+
+/* Question */
+.answers { position: relative; width: 100%; min-height: 150px; display: flex; justify-content: center; align-items: center; gap: 18px; }
+#yes { background: linear-gradient(#f9c9d2, #f1a8b8); transition: transform .3s cubic-bezier(.3, 1.6, .5, 1); }
+#no { background: linear-gradient(#f1eef0, #e5dfe2); transition: left .35s ease, top .35s ease, transform .3s ease; font-size: 16px; }
+#no.loose { position: absolute; }
+
+a.btn { text-decoration: none; }
+#send { background: linear-gradient(#f9c9d2, #f1a8b8); }
+.copybox { width: 100%; box-sizing: border-box; border-radius: 20px; padding: 14px 16px; background: #f6eff1; box-shadow: var(--shadow-in); display: flex; flex-direction: column; gap: 8px; }
+.copybox p { font-size: 14px; line-height: 1.5; color: var(--ink); white-space: pre-line; user-select: all; text-align: left; }
+.linkbtn { border: 0; background: none; font: 500 15px var(--body); color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 4px; }
+.progress { position: fixed; left: 0; right: 0; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: center; gap: 8px; pointer-events: none; }
+.progress i { width: 7px; height: 7px; border-radius: 99px; background: rgba(140, 100, 110, .22); transition: width .4s ease, background .4s ease; }
+.progress i.on { width: 22px; background: #d79bb0; }
+
+.pop { position: fixed; pointer-events: none; z-index: 20; width: 16px; height: 16px; }
+
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.window .critter { animation: none; }
+@keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.14); } 30% { transform: scale(.98); } 45% { transform: scale(1.08); } }
+@keyframes pulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes tear { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(20px); opacity: 0; } }
+.tear { animation: tear 2.4s ease-in infinite; }
+
+@media (max-height: 700px) {
+  .window { height: 140px; } .window .critter { width: 146px; }
+  h1 { font-size: 40px; } .letter .body { min-height: 0; font-size: 16px; line-height: 1.6; }
+  .pill { height: 72px; } .card { gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+}
+</style>
+
+<div class="sky" id="sky" aria-hidden="true"></div>
+
+<main class="stage">
+  <!-- 0: envelope -->
+  <section class="scene on" data-step="0">
+    <p class="eyebrow">Something for you…</p>
+    <button class="envelope" id="env" aria-label="Open the envelope">
+      <span class="env-back"></span>
+      <span class="env-letter">for you</span>
+      <span class="env-front"></span>
+      <span class="env-flap"></span>
+      <span class="seal"><svg viewBox="0 0 24 24"><use href="#heart"/></svg></span>
+    </button>
+    <p class="hint">Tap the envelope</p>
+  </section>
+
+  <!-- 1: hello -->
+  <section class="scene" data-step="1">
+    <div class="card">
+      <div class="window pink" data-critter="bunny:sad"></div>
+      <h1>Hey <span class="to-name">Lavuu</span></h1>
+      <p>Can we talk for a moment? There's something important I want to tell you.</p>
+      <button class="btn" data-next>Continue <svg viewBox="0 0 24 24" fill="currentColor"><use href="#heart"/></svg></button>
+    </div>
+  </section>
+
+  <!-- 2: confession -->
+  <section class="scene" data-step="2">
+    <div class="card">
+      <div class="window lilac" data-critter="cat:sad:tear"></div>
+      <p style="font-size:18px">I know I hurt and disappointed you… and I've been feeling bad about it ever since.</p>
+      <button class="btn lilac" data-next>Next <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <!-- 3: little things -->
+  <section class="scene" data-step="3">
+    <div class="card">
+      <h2>Little things I want to tell you…</h2>
+      <p class="sub" id="pill-sub">Tap each heart</p>
+      <div class="pills">
+        <button class="pill"><span class="face front"><svg viewBox="0 0 24 24"><use href="#heart"/></svg></span><span class="face back">I messed up… and I'm really sorry for that.</span></button>
+        <button class="pill"><span class="face front"><svg viewBox="0 0 24 24"><use href="#heart"/></svg></span><span class="face back">I promise I'll be better for you.</span></button>
+        <button class="pill"><span class="face front"><svg viewBox="0 0 24 24"><use href="#heart"/></svg></span><span class="face back">Please forgive me… one last time🥹❤️‍🩹</span></button>
+      </div>
+      <button class="btn" id="pill-next" data-next disabled>My message <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <!-- 4: from my heart -->
+  <section class="scene" data-step="4">
+    <div class="card">
+      <h2>From my heart…</h2>
+      <div class="duo">
+        <div class="window lilac" data-critter="cat:sparkle:heart"></div>
+        <div class="window pink" data-critter="bunny:sparkle:heart"></div>
+      </div>
+      <button class="tapcard" data-next>
+        <span class="tap">↓ Tap to see message ↓</span>
+        <span class="paper">
+          <svg class="sprig" style="right:6px;top:4px" viewBox="0 0 64 64"><use href="#sprig"/></svg>
+          <h2>I'm Sorry</h2>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 5: letter -->
+  <section class="scene" data-step="5">
+    <div class="card" style="padding:14px">
+      <div class="paper letter" id="letter">
+        <svg class="sprig" style="right:8px;top:6px" viewBox="0 0 64 64"><use href="#sprig"/></svg>
+        <svg class="sprig" style="left:4px;bottom:4px;transform:rotate(200deg)" viewBox="0 0 64 64"><use href="#sprig"/></svg>
+        <h1>I'm Sorry</h1>
+        <p class="body" id="letter-body"></p>
+        <p class="sign">— yours Bbg🥹</p>
+      </div>
+      <button class="btn" data-next id="letter-next" style="opacity:0;pointer-events:none">Keep going <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <!-- 6: coupons -->
+  <section class="scene" data-step="6">
+    <div class="card">
+      <h2>Let me make it up to you</h2>
+      <p class="sub">Sorry coupons. Tap one to redeem it.</p>
+      <div class="coupons">
+        <button class="coupon"><span class="no">No. 01</span><span class="what">One giant hug, no time limit</span><span class="stamp">Redeemed</span></button>
+        <button class="coupon"><span class="no">No. 02</span><span class="what">One golden ticket: cash it in for a special wish, anytime</span><span class="stamp">Redeemed</span></button>
+        <button class="coupon"><span class="no">No. 03</span><span class="what">One mystery wish: name it and it's yours</span><span class="stamp">Redeemed</span></button>
+        <button class="coupon"><span class="no">No. 04</span><span class="what">Your wish is my command for one whole week</span><span class="stamp">Redeemed</span></button>
+      </div>
+      <p class="sub">Valid forever. No expiry.</p>
+      <button class="btn lilac" data-next>One last thing <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <!-- 7: question -->
+  <section class="scene" data-step="7">
+    <div class="card" id="ask-card">
+      <div class="window peach" data-critter="cat:sparkle"></div>
+      <h1>Will you forgive me?</h1>
+      <div class="answers" id="answers">
+        <button class="btn" id="yes">Yes <svg viewBox="0 0 24 24" fill="currentColor"><use href="#heart"/></svg></button>
+        <button class="btn" id="no">No</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8: yay -->
+  <section class="scene" data-step="8">
+    <div class="card">
+      <div class="window pink" id="hug" style="height:178px">
+        <span class="hug-pair"></span>
+      </div>
+      <h1>Yay, thank you!</h1>
+      <p>You just made my whole day. I'll keep every promise in this little letter.</p>
+      <p class="sub">I love you, <span class="to-name">Lavuu</span>. — Bbg🥹</p>
+      <a class="btn" id="send" href="https://wa.me/" target="_blank" rel="noopener">Tell Bbg your wish 💌</a>
+      <p class="sub" id="send-note">Opens WhatsApp with your answer ready to send.</p>
+      <div class="copybox" id="copybox">
+        <p id="send-text"></p>
+        <button class="linkbtn" id="copy">Copy message instead</button>
+      </div>
+      <button class="linkbtn" id="again">Read it again</button>
+    </div>
+  </section>
+</main>
+
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21s-7.6-4.7-9.6-9.3C.9 8.2 3.2 4 7.2 4c2.1 0 3.7 1.1 4.8 2.8C13.1 5.1 14.7 4 16.8 4c4 0 6.3 4.2 4.8 7.7C19.6 16.3 12 21 12 21z"/></symbol>
+    <symbol id="sprig" viewBox="0 0 64 64">
+      <path d="M58 6 C44 18 30 30 8 58" fill="none" stroke="#9cae86" stroke-width="1.6" stroke-linecap="round"/>
+      <g fill="#a9bf8f">
+        <ellipse cx="48" cy="14" rx="7" ry="3.2" transform="rotate(-30 48 14)"/>
+        <ellipse cx="42" cy="26" rx="7" ry="3.2" transform="rotate(30 42 26)"/>
+        <ellipse cx="32" cy="30" rx="7" ry="3.2" transform="rotate(-40 32 30)"/>
+        <ellipse cx="26" cy="42" rx="7" ry="3.2" transform="rotate(25 26 42)"/>
+      </g>
+      <g fill="#f1d3c9"><circle cx="56" cy="22" r="2.4"/><circle cx="18" cy="48" r="2.4"/><circle cx="36" cy="18" r="1.8"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<script>
+// Change these two lines to personalise the page.
+const TO = "Lavuu";
+const LETTER = "For hurting you and making you feel upset, I'm truly sorry. I never wanted to be the reason behind your tears and frustration.\n\nThe child inside me just wanted to make you happy… and ended up hurting us both 😔\n\nYou matter to me more than I always manage to show, and I hate that I let you down.\n\nI promise to grow, to listen, and to be better for you every single day.";
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const LINE = "#5a3a32";
+
+document.querySelectorAll(".to-name").forEach(el => el.textContent = TO);
+
+function critter(kind, mood, extra = "") {
+  const ears = kind === "bunny"
+    ? `<ellipse cx="50" cy="26" rx="11" ry="27" transform="rotate(-14 50 26)" fill="#fff" stroke="${LINE}" stroke-width="3"/>
+       <ellipse cx="50" cy="28" rx="5" ry="17" transform="rotate(-14 50 28)" fill="#f9cfd4"/>
+       <ellipse cx="90" cy="26" rx="11" ry="27" transform="rotate(14 90 26)" fill="#fff" stroke="${LINE}" stroke-width="3"/>
+       <ellipse cx="90" cy="28" rx="5" ry="17" transform="rotate(14 90 28)" fill="#f9cfd4"/>`
+    : `<path d="M30 54 L33 14 L62 36 Z" fill="#fff" stroke="${LINE}" stroke-width="3" stroke-linejoin="round"/>
+       <path d="M37 42 L38 24 L52 35 Z" fill="#f9cfd4"/>
+       <path d="M110 54 L107 14 L78 36 Z" fill="#fff" stroke="${LINE}" stroke-width="3" stroke-linejoin="round"/>
+       <path d="M103 42 L102 24 L88 35 Z" fill="#f9cfd4"/>
+       <path d="M58 30 q4 -3 8 0 M68 28 q4 -3 8 0" fill="none" stroke="#c9c2c4" stroke-width="2.4" stroke-linecap="round"/>`;
+  let eyes, brows = "", mouth;
+  if (mood === "sad") {
+    eyes = `<circle cx="55" cy="64" r="4.6" fill="${LINE}"/><circle cx="85" cy="64" r="4.6" fill="${LINE}"/>
+            <circle cx="56.5" cy="62.5" r="1.5" fill="#fff"/><circle cx="86.5" cy="62.5" r="1.5" fill="#fff"/>`;
+    brows = `<path d="M46 55 L58 50 M94 55 L82 50" stroke="${LINE}" stroke-width="2.6" stroke-linecap="round"/>`;
+    mouth = `<path d="M64 79 Q70 73 76 79" fill="none" stroke="${LINE}" stroke-width="2.6" stroke-linecap="round"/>`;
+  } else if (mood === "happy") {
+    eyes = `<path d="M48 66 Q55 56 62 66 M78 66 Q85 56 92 66" fill="none" stroke="${LINE}" stroke-width="3" stroke-linecap="round"/>`;
+    mouth = `<path d="M63 74 Q70 84 77 74 Z" fill="#e8737b" stroke="${LINE}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  } else {
+    eyes = `<circle cx="55" cy="64" r="5.6" fill="${LINE}"/><circle cx="85" cy="64" r="5.6" fill="${LINE}"/>
+            <circle cx="57" cy="61.5" r="2" fill="#fff"/><circle cx="87" cy="61.5" r="2" fill="#fff"/>
+            <circle cx="53.5" cy="66.5" r="1" fill="#fff"/><circle cx="83.5" cy="66.5" r="1" fill="#fff"/>`;
+    mouth = `<path d="M63 74 Q66.5 79 70 74 Q73.5 79 77 74" fill="none" stroke="${LINE}" stroke-width="2.6" stroke-linecap="round"/>`;
+  }
+  const heart = extra.includes("heart")
+    ? `<g transform="translate(46 84) scale(2)"><use href="#heart" fill="#ef5f69" stroke="${LINE}" stroke-width="1.2"/></g>
+       <ellipse cx="47" cy="100" rx="8" ry="7" fill="#fff" stroke="${LINE}" stroke-width="2.6"/>
+       <ellipse cx="93" cy="100" rx="8" ry="7" fill="#fff" stroke="${LINE}" stroke-width="2.6"/>`
+    : `<path d="M58 100 q4 -8 8 0 M74 100 q4 -8 8 0" fill="#fff" stroke="${LINE}" stroke-width="2.6" stroke-linecap="round"/>`;
+  const tear = extra.includes("tear")
+    ? `<path class="tear" d="M46 70 q-4 6 0 8 q4 -2 0 -8z" fill="#9fc6f0"/>` : "";
+  return `<svg class="critter" viewBox="0 0 140 120" aria-hidden="true">
+    ${ears}
+    <path d="M28 122 C28 94 44 84 70 84 C96 84 112 94 112 122 Z" fill="#fff" stroke="${LINE}" stroke-width="3"/>
+    <ellipse cx="70" cy="62" rx="44" ry="33" fill="#fff" stroke="${LINE}" stroke-width="3"/>
+    <ellipse cx="44" cy="73" rx="7.5" ry="4.6" fill="#f7b8bf" opacity=".85"/>
+    <ellipse cx="96" cy="73" rx="7.5" ry="4.6" fill="#f7b8bf" opacity=".85"/>
+    ${eyes}${brows}${mouth}${tear}${heart}
+  </svg>`;
+}
+
+const decoHeart = (x, y, c, d) => `<svg class="deco" style="left:${x};top:${y};fill:${c};animation-delay:${d}s" viewBox="0 0 24 24"><use href="#heart"/></svg>`;
+document.querySelectorAll("[data-critter]").forEach(w => {
+  const [kind, mood, extra] = w.dataset.critter.split(":");
+  const tint = w.classList.contains("lilac") ? "#cbbcf5" : w.classList.contains("peach") ? "#f4c0a8" : "#f4bccb";
+  const decos = w.closest(".duo") ? "" : decoHeart("22%", "18%", tint, 0) + decoHeart("70%", "16%", tint, .6);
+  w.innerHTML = decos + critter(kind, mood, extra);
+});
+document.querySelector(".hug-pair").outerHTML =
+  `<div style="position:absolute;inset:0">
+     <div style="position:absolute;left:50%;top:10px;width:46px;margin-left:-23px;animation:beat 1.4s ease-in-out infinite">
+       <svg viewBox="0 0 24 24" fill="#ef5f69"><use href="#heart"/></svg></div>
+     <div style="position:absolute;left:calc(50% - 128px);bottom:-2px;width:150px;transform:rotate(6deg)">${critter("cat", "happy")}</div>
+     <div style="position:absolute;left:calc(50% - 22px);bottom:-2px;width:150px;transform:rotate(-6deg)">${critter("bunny", "happy")}</div>
+   </div>`;
+
+// Floating background hearts
+const sky = document.getElementById("sky");
+const skyColors = ["#f3a7b4", "#c9b8f4", "#f6c2a9", "#f2b6cf"];
+for (let i = 0; i < 14; i++) {
+  const s = document.createElement("span");
+  const size = 18 + Math.random() * 34;
+  s.style.left = Math.random() * 100 + "%";
+  s.style.animationDuration = 14 + Math.random() * 14 + "s";
+  s.style.animationDelay = -Math.random() * 26 + "s";
+  const outline = Math.random() > .4;
+  s.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 24 24"><use href="#heart" ${outline ? `fill="none" stroke="${skyColors[i % 4]}" stroke-width="2.2"` : `fill="${skyColors[i % 4]}"`}/></svg>`;
+  sky.appendChild(s);
+}
+
+// Little heart pops on every tap
+function burst(x, y, n = 6, spread = 60, colors = ["#ef6a74", "#f2a3b8", "#b9a6ef", "#f4b39a"]) {
+  if (reduce) return;
+  for (let i = 0; i < n; i++) {
+    const h = document.createElement("div");
+    h.className = "pop";
+    const size = 10 + Math.random() * 14;
+    h.style.cssText = `left:${x - size / 2}px;top:${y - size / 2}px;width:${size}px;height:${size}px`;
+    h.innerHTML = `<svg viewBox="0 0 24 24" fill="${colors[i % colors.length]}"><use href="#heart"/></svg>`;
+    document.body.appendChild(h);
+    const a = Math.random() * Math.PI * 2, r = spread * (.5 + Math.random());
+    h.animate([
+      { transform: "translate(0,0) scale(.3)", opacity: 1 },
+      { transform: `translate(${Math.cos(a) * r}px, ${Math.sin(a) * r - 30}px) scale(1) rotate(${Math.random() * 60 - 30}deg)`, opacity: 0 }
+    ], { duration: 900 + Math.random() * 600, easing: "cubic-bezier(.2,.8,.3,1)" }).onfinish = () => h.remove();
+  }
+}
+addEventListener("pointerdown", e => burst(e.clientX, e.clientY, 5, 50));
+
+// Scenes
+const scenes = [...document.querySelectorAll(".scene")];
+const progress = document.getElementById("progress");
+for (let i = 1; i < scenes.length; i++) progress.appendChild(document.createElement("i"));
+let step = 0;
+function go(n) {
+  scenes[step].classList.remove("on");
+  scenes[step].classList.add("gone");
+  const prev = scenes[step];
+  setTimeout(() => prev.classList.remove("gone"), 600);
+  step = n;
+  scenes[step].classList.add("on");
+  [...progress.children].forEach((d, i) => d.classList.toggle("on", i === step - 1));
+  progress.style.opacity = step === 0 ? 0 : 1;
+  if (step === 5) typeLetter();
+  if (step === 8) celebrate();
+}
+progress.style.opacity = 0;
+document.querySelectorAll("[data-next]").forEach(b => b.addEventListener("click", () => go(step + 1)));
+
+// Envelope
+const env = document.getElementById("env");
+env.addEventListener("click", () => {
+  if (env.classList.contains("open")) return;
+  env.classList.add("open");
+  const r = env.getBoundingClientRect();
+  burst(r.left + r.width / 2, r.top + 40, 14, 110);
+  setTimeout(() => go(1), reduce ? 200 : 1500);
+});
+
+// Pills
+const pills = [...document.querySelectorAll(".pill")];
+const pillNext = document.getElementById("pill-next");
+const pillSub = document.getElementById("pill-sub");
+pills.forEach(p => p.addEventListener("click", () => {
+  p.classList.add("open");
+  const left = pills.filter(x => !x.classList.contains("open")).length;
+  pillSub.textContent = left ? `${left} more to open` : "That's all of them";
+  pillNext.disabled = left > 0;
+}));
+
+// Letter typewriter
+const letter = document.getElementById("letter");
+const body = document.getElementById("letter-body");
+const letterNext = document.getElementById("letter-next");
+let typing = null;
+function finishLetter() {
+  clearTimeout(typing);
+  body.textContent = LETTER;
+  letter.classList.add("done");
+  letterNext.style.cssText = "opacity:1;pointer-events:auto";
+}
+function typeLetter() {
+  body.textContent = "";
+  letter.classList.remove("done");
+  letterNext.style.cssText = "opacity:0;pointer-events:none";
+  if (reduce) return finishLetter();
+  let i = 0;
+  (function tick() {
+    if (i >= LETTER.length) return finishLetter();
+    body.textContent = LETTER.slice(0, ++i);
+    const ch = LETTER[i - 1];
+    typing = setTimeout(tick, ch === "\n" ? 260 : ".,".includes(ch) ? 240 : 32);
+  })();
+}
+letter.addEventListener("click", () => { if (!letter.classList.contains("done")) finishLetter(); });
+
+// Coupons
+document.querySelectorAll(".coupon").forEach(c => c.addEventListener("click", e => {
+  c.classList.toggle("used");
+  if (c.classList.contains("used")) burst(e.clientX, e.clientY, 8, 70);
+}));
+
+// The question
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+const answers = document.getElementById("answers");
+const pleas = ["Are you sure?", "Pretty please?", "Think again…", "I'll bring snacks", "Look at the cat", "Okay, just tap Yes"];
+let dodges = 0;
+function dodge(e) {
+  e.preventDefault();
+  dodges++;
+  no.textContent = pleas[Math.min(dodges - 1, pleas.length - 1)];
+  yes.style.transform = `scale(${Math.min(1 + dodges * .14, 1.9)})`;
+  const box = answers.getBoundingClientRect();
+  no.classList.add("loose");
+  const w = no.offsetWidth, h = no.offsetHeight;
+  no.style.left = Math.random() * Math.max(0, box.width - w) + "px";
+  no.style.top = Math.random() * Math.max(0, box.height - h) + "px";
+  if (dodges > 6) no.style.transform = "scale(.7)";
+}
+no.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") dodge(e); });
+no.addEventListener("pointerdown", dodge);
+no.addEventListener("click", e => { e.preventDefault(); if (e.detail === 0) dodge(e); });
+yes.addEventListener("click", () => go(8));
+
+function answerText() {
+  const picked = [...document.querySelectorAll(".coupon.used .what")].map(el => "• " + el.textContent);
+  const lines = [`I forgive you, Bbg 🥹❤️`];
+  lines.push(picked.length ? `\nCoupons I'm redeeming:\n${picked.join("\n")}` : `\nI haven't picked a coupon yet… I'm saving them 😌`);
+  if (dodges) lines.push(`\n(I tried to press No ${dodges} time${dodges > 1 ? "s" : ""} 😛)`);
+  return lines.join("\n");
+}
+const sendBtn = document.getElementById("send");
+const sendText = document.getElementById("send-text");
+function refreshAnswer() {
+  const t = answerText();
+  sendText.textContent = t;
+  sendBtn.href = "https://wa.me/?text=" + encodeURIComponent(t);
+}
+document.getElementById("copy").addEventListener("click", async e => {
+  const b = e.currentTarget;
+  try { await navigator.clipboard.writeText(sendText.textContent); b.textContent = "Copied. Paste it in your chat with Bbg"; }
+  catch { getSelection().selectAllChildren(sendText); b.textContent = "Selected. Copy it and send it to Bbg"; }
+});
+
+function celebrate() {
+  refreshAnswer();
+  const w = innerWidth, h = innerHeight;
+  [0, 250, 500].forEach((t, k) => setTimeout(() => burst(w * (.25 + k * .25), h * .4, 22, 180), t));
+}
+
+document.getElementById("again").addEventListener("click", () => {
+  pills.forEach(p => p.classList.remove("open"));
+  pillNext.disabled = true; pillSub.textContent = "Tap each heart";
+  dodges = 0; no.textContent = "No"; no.className = "btn"; no.style.cssText = ""; yes.style.transform = "";
+  go(1);
+});
+</script>
+
+</body></html>
